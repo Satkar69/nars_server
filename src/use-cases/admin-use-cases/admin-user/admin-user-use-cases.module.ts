@@ -5,21 +5,10 @@ import { AdminUserUseCaseService } from './admin-user-use-case.service';
 import { AdminUserAuthUseCaseService } from './admin-user-auth-use-case.service';
 import { BcryptModule } from 'src/services/bcrypt/bcrypt.module';
 import { JwtServiceModule } from 'src/services/jwt/jwt.module';
-import { AdminUserInvestorUseCaseService } from './admin-user-investor-usecase.service';
 
 @Module({
   imports: [DataServicesModule, BcryptModule, JwtServiceModule],
-  providers: [
-    AdminUserFactoryService,
-    AdminUserUseCaseService,
-    AdminUserAuthUseCaseService,
-    AdminUserInvestorUseCaseService,
-  ],
-  exports: [
-    AdminUserFactoryService,
-    AdminUserUseCaseService,
-    AdminUserAuthUseCaseService,
-    AdminUserInvestorUseCaseService,
-  ],
+  providers: [AdminUserFactoryService, AdminUserUseCaseService, AdminUserAuthUseCaseService],
+  exports: [AdminUserFactoryService, AdminUserUseCaseService, AdminUserAuthUseCaseService],
 })
 export class AdminUserUseCasesModule {}

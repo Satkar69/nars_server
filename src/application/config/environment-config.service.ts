@@ -12,6 +12,10 @@ export class EnvironmentConfigService implements DatabaseConfig, JWTConfig, Defa
     return this.configService.get<string>('JWT_SECRET');
   }
 
+  getDataBaseUrl(): string {
+    return this.configService.get<string>('DATABASE_URL');
+  }
+
   getJwtExpirationTime(): string {
     return this.configService.get<string>('JWT_EXPIRATION_TIME');
   }

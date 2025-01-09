@@ -1,8 +1,12 @@
-import { CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, ObjectIdColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 export class BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  // @ObjectIdColumn()
+  // _id: ObjectId;
 
   @CreateDateColumn({
     type: 'timestamptz',

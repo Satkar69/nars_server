@@ -1,7 +1,6 @@
 import { Routes } from '@nestjs/core';
 import { AdminControllerModule } from './admin/admin-controller.module';
 import { AuthControllerModule } from './auth/auth-controller.module';
-import { UserControllerModule } from './ipo-investors/ipo-investor-controller.module';
 import { FileUploadControllerModule } from './file-upload/file-upload.module';
 
 const routes: Routes = [
@@ -11,10 +10,6 @@ const routes: Routes = [
       {
         path: '/admin',
         children: [AdminControllerModule],
-      },
-      {
-        path: '/users',
-        children: [UserControllerModule],
       },
       {
         path: '/upload',

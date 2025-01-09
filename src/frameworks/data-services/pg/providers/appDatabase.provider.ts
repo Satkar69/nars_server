@@ -11,11 +11,12 @@ export const appDataSourceProviders = [
     useFactory: async (adminSeeder: AdminSeeder, config: EnvironmentConfigService) => {
       try {
         const dataSourceOptions: object = {
-          type: 'postgres',
-          host: config.getDatabaseHost(),
-          port: config.getDatabasePort(),
-          username: config.getDatabaseUser(),
-          password: config.getDatabasePassword(),
+          type: 'mongodb',
+          url: config.getDataBaseUrl(),
+          // host: config.getDatabaseHost(),
+          // port: config.getDatabasePort(),
+          // username: config.getDatabaseUser(),
+          // password: config.getDatabasePassword(),
           database: config.getDatabaseName(),
           entities: ['dist/frameworks/data-services/pg/entities/**/*.entity{.ts,.js}'],
           synchronize: true,

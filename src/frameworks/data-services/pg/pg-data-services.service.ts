@@ -11,10 +11,8 @@ import { UserModel } from 'src/core/models/user.model';
 import { DataSource, Repository } from 'typeorm';
 import { AdminEntity } from './entities';
 import { FileEntity } from './entities/file.entity';
-import { UsersEntity } from './entities/users.entity';
 import { PgGenericRepository } from './pg-generic-repository';
 import { PgAdminRepository } from './repositories/admin.repository';
-import { PgIUserRepository } from './repositories/user.repository';
 
 @Injectable()
 export class PgDataServices implements IDataServices, OnApplicationBootstrap {
@@ -25,9 +23,6 @@ export class PgDataServices implements IDataServices, OnApplicationBootstrap {
   constructor(
     @Inject(AdminEntity.REPOSITORY)
     private adminRepository: Repository<AdminEntity>,
-
-    @Inject(UsersEntity.REPOSITORY)
-    private userRepository: Repository<UsersEntity>,
 
     @Inject(FileEntity.REPOSITORY)
     private fileRepository: Repository<FileEntity>,
@@ -42,7 +37,6 @@ export class PgDataServices implements IDataServices, OnApplicationBootstrap {
     // admin
     this.admin = new PgAdminRepository(this.cls, this.adminRepository);
     // user
-    this.user = new PgIUserRepository(this.cls, this.userRepository);
     // file
     this.file = new PgGenericRepository(this.cls, this.fileRepository);
   }
