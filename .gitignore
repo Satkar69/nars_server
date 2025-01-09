@@ -1,7 +1,8 @@
 # compiled output
 /dist
 /node_modules
-/uploads
+/build
+
 # Logs
 logs
 *.log
@@ -34,11 +35,22 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-/env/*
+# dotenv environment variable files
 .env
-.env*
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
-/.vscode
-**/pre-ipo-firebase-config.ts
+# temp directory
+.temp
+.tmp
 
-# docker-compose.local.yml
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

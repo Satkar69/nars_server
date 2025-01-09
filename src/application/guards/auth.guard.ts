@@ -1,77 +1,89 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_KEY } from 'src/application/decorators/public.decorator';
+import { JwtTokenService } from 'src/libs/token/jwt/jwt-token.service';
 import { Request } from 'express';
-import { AppClsStore } from 'src/common/interface/app-cls-store.interface';
-import { IClsStore } from 'src/core/abstracts/adapters/cls-store.abstract';
-import { IJwtService } from 'src/core/abstracts/adapters/jwt.interface';
-import { IS_ADMIN_KEY } from '../decorators/admin.decorator';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import AppUnauthorizedException from '../exception/app-unauthorized.exception';
-import { IS_USER_KEY } from '../decorators/investor.decorator';
+import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
+import { Repository } from 'typeorm';
+import { AdminEntity } from 'src/data-services/mgdb/entities/admin.entity';
+import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private _jwtService: IJwtService,
-    private _reflector: Reflector,
-    private readonly cls: IClsStore<AppClsStore>,
+    private jwtTokenService: JwtTokenService,
+    private reflector: Reflector,
+
+    @InjectRepository(AdminEntity)
+    private adminRepository: Repository<AdminEntity>,
+
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
+
+  private extractToken(request: Request): string | undefined {
+    return request.headers.authorization?.split(' ')[1];
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const { url: requestUrl } = request;
+    const token = this.extractToken(request);
 
-    // if is public set isPublic to true and return
     const isPublic =
-      this._reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]) ||
-      requestUrl.startsWith('/api/pre-ipo/public')
+      requestUrl.startsWith('/api/xploverse/auth') ||
+      requestUrl.startsWith('/api/xploverse/admin/create') ||
+      requestUrl.startsWith('/api/xploverse/user/create')
         ? true
-        : false;
-    if (isPublic) {
-      this.cls.set('isPublic', true);
-      return true;
+        : false ||
+          this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+            context.getHandler(), // Check route handler (method-level metadata)
+            context.getClass(), // Check controller (class-level metadata)
+          ]);
+
+    if (isPublic) return true;
+
+    if (!token) {
+      throw new UnauthorizedException('Invalid token');
     }
 
-    const isAdmin =
-      this._reflector.getAllAndOverride<boolean>(IS_ADMIN_KEY, [context.getHandler(), context.getClass()]) ||
-      requestUrl.startsWith('/api/pre-ipo/admin')
-        ? true
-        : false;
+    const isAdmin = requestUrl.startsWith('/api/xploverse/admin')
+      ? true
+      : false;
 
-    const isUser =
-      this._reflector.getAllAndOverride<boolean>(IS_USER_KEY, [context.getHandler(), context.getClass()]) ||
-      requestUrl.startsWith('/api/pre-ipo/ipo-investors')
-        ? true
-        : false;
+    const isUser = requestUrl.startsWith('/api/xploverse/user') ? true : false;
 
-    this.cls.set('isPublic', isPublic);
-    this.cls.set('isAdmin', isAdmin);
-    this.cls.set('isUser', isUser);
-    if (isPublic) {
-      return true;
-    }
-    if (isAdmin || isUser) {
-      const token = this.extractTokenFromHeader(request);
-      if (!token || token === 'null' || token === 'undefined') {
-        throw new AppUnauthorizedException('Invalid token. Please login again.');
-      } else {
-        try {
-          const payload: any = await this._jwtService.checkToken<any>(token.trim());
-          if (!payload) {
-            throw new AppUnauthorizedException('Invalid token. Please login again.');
-          }
-          this.cls.set('payload', payload);
-          return true;
-        } catch (error) {
-          throw new AppUnauthorizedException(JSON.stringify(error));
-        }
+    try {
+      const decoded = await this.jwtTokenService.checkToken(token);
+      if (isAdmin) {
+        const admin = await this.adminRepository.findOneBy({
+          _id: convertToObjectId(decoded._id),
+        });
+
+        if (!admin) throw new NotFoundException('admin does not exist');
+
+        request.admin = admin;
+      } else if (isUser) {
+        const user = await this.userRepository.findOneBy({
+          _id: convertToObjectId(decoded._id),
+        });
+
+        if (!user) throw new NotFoundException('user does not exist');
+
+        request.user = user;
       }
+    } catch (error) {
+      Logger.error(error.message);
+      throw new UnauthorizedException('Invalid Token');
     }
     return true;
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
   }
 }

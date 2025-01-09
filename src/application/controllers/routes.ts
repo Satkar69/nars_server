@@ -1,25 +1,21 @@
 import { Routes } from '@nestjs/core';
-import { AdminControllerModule } from './admin/admin-controller.module';
 import { AuthControllerModule } from './auth/auth-controller.module';
-import { FileUploadControllerModule } from './file-upload/file-upload.module';
+import { AdminControllerModule } from './admin/admin-controller.module';
+
 
 const routes: Routes = [
   {
-    path: '/pre-ipo',
+    path: '/nars',
     children: [
+      {
+        path: '/auth',
+        children: [AuthControllerModule],
+      },
       {
         path: '/admin',
         children: [AdminControllerModule],
       },
-      {
-        path: '/upload',
-        children: [FileUploadControllerModule],
-      },
     ],
-  },
-  {
-    path: '/auth',
-    children: [AuthControllerModule],
   },
 ];
 
