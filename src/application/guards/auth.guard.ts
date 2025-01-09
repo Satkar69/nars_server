@@ -13,7 +13,6 @@ import { Request } from 'express';
 import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { Repository } from 'typeorm';
 import { AdminEntity } from 'src/data-services/mgdb/entities/admin.entity';
-import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -24,9 +23,6 @@ export class AuthGuard implements CanActivate {
 
     @InjectRepository(AdminEntity)
     private adminRepository: Repository<AdminEntity>,
-
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
   ) {}
 
   private extractToken(request: Request): string | undefined {
@@ -39,9 +35,8 @@ export class AuthGuard implements CanActivate {
     const token = this.extractToken(request);
 
     const isPublic =
-      requestUrl.startsWith('/api/xploverse/auth') ||
-      requestUrl.startsWith('/api/xploverse/admin/create') ||
-      requestUrl.startsWith('/api/xploverse/user/create')
+      requestUrl.startsWith('/api/nars/auth') ||
+      requestUrl.startsWith('/api/nars/admin/create')
         ? true
         : false ||
           this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -55,11 +50,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token');
     }
 
-    const isAdmin = requestUrl.startsWith('/api/xploverse/admin')
-      ? true
-      : false;
-
-    const isUser = requestUrl.startsWith('/api/xploverse/user') ? true : false;
+    const isAdmin = requestUrl.startsWith('/api/nars/admin') ? true : false;
 
     try {
       const decoded = await this.jwtTokenService.checkToken(token);
@@ -71,14 +62,6 @@ export class AuthGuard implements CanActivate {
         if (!admin) throw new NotFoundException('admin does not exist');
 
         request.admin = admin;
-      } else if (isUser) {
-        const user = await this.userRepository.findOneBy({
-          _id: convertToObjectId(decoded._id),
-        });
-
-        if (!user) throw new NotFoundException('user does not exist');
-
-        request.user = user;
       }
     } catch (error) {
       Logger.error(error.message);
