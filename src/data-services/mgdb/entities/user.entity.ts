@@ -1,11 +1,8 @@
 import { Column, Entity } from 'typeorm';
 import { BaseEntity } from './base.entity';
 
-@Entity('admins')
-export class AdminEntity extends BaseEntity {
-  @Column()
-  username: string;
-
+@Entity('users')
+export class UserEntity extends BaseEntity {
   @Column()
   fullname: string;
 
@@ -13,7 +10,16 @@ export class AdminEntity extends BaseEntity {
   email: string;
 
   @Column()
+  contact: string;
+
+  @Column()
   password: string;
+
+  @Column()
+  location: {
+    latitude: string;
+    longitude: string;
+  };
 
   toJSON() {
     return {
