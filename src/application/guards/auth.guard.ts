@@ -77,7 +77,7 @@ export class AuthGuard implements CanActivate {
 
         if (!user) throw new NotFoundException('user does not exist');
 
-        request.admin = user;
+        request.user = user;
       }
     } catch (error) {
       Logger.error(error.message);

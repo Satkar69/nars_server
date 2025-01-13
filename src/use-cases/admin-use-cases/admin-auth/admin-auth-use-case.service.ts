@@ -39,7 +39,6 @@ export class AdminAuthUseCaseService {
     const accessToken = await this.jwtTokenService.createToken(payload);
     return {
       accessToken,
-      admin,
     };
   }
 }

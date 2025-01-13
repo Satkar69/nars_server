@@ -23,6 +23,6 @@ export class UserController {
 
   @Get('/me')
   async getMe(@Req() req: any) {
-    return CoreApiResponse.success(req.user);
+    return CoreApiResponse.success({ user: req.user });
   }
 }
