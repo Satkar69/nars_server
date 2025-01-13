@@ -3,11 +3,20 @@ import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminEntity } from './entities/admin.entity';
 import { FileEntity } from './entities/file.entity';
+import { UserEntity } from './entities/user.entity';
+import { AmbulanceEntity } from './entities/ambulance.entity';
+import { AmbulanceRequestEntity } from './entities/ambulance-request.entity';
 
 @Global() // makes the module available globally for other modules once imported in the app modules
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AdminEntity, FileEntity]), // Register repositories
+    TypeOrmModule.forFeature([
+      AdminEntity,
+      FileEntity,
+      UserEntity,
+      AmbulanceEntity,
+      AmbulanceRequestEntity,
+    ]), // Register repositories
   ],
   providers: [
     {
@@ -40,7 +49,13 @@ import { FileEntity } from './entities/file.entity';
   ],
   exports: [
     DataSource,
-    TypeOrmModule.forFeature([AdminEntity, FileEntity]), // Export repositories here
+    TypeOrmModule.forFeature([
+      AdminEntity,
+      FileEntity,
+      UserEntity,
+      AmbulanceEntity,
+      AmbulanceRequestEntity,
+    ]), // Export repositories here
   ],
 })
 export class AppDataSourceModule {}

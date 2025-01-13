@@ -23,9 +23,9 @@ export class AdminUseCaseService {
       username: dto.username,
     });
 
-    if (admin) {
-      throw new ConflictException('admin already exists.');
-    }
+    // if (admin) {
+    //   throw new ConflictException('admin already exists.');
+    // }
 
     const newAdmin = this.adminRepository.create(dto);
     newAdmin.password = await this.bcryptService.hash(dto.password);
