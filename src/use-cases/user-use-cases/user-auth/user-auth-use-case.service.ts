@@ -37,6 +37,6 @@ export class UserAuthUseCaseService {
 
     const payload = { _id: user._id };
     const accessToken = await this.jwtTokenService.createToken(payload);
-    return { accessToken };
+    return { accessToken, user };
   }
 }
