@@ -48,9 +48,9 @@ export class AdminUseCaseService {
     return admin;
   }
 
-  async findAdminById(id: ObjectId) {
+  async findAdminById(adminId: ObjectId) {
     const admin = await this.adminRepository.findOneBy({
-      _id: id,
+      _id: adminId,
     });
     if (!admin) {
       throw new NotFoundException('admin does not exist');
