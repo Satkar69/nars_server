@@ -1,11 +1,10 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { ObjectId } from 'mongodb';
+import { GeoDataInterface } from 'src/common/interface/geodata.interface';
 
-export class SignUpDto {
+export class AdminSignUpDto {
   @IsNotEmpty()
   username: string;
 
-  @IsOptional()
   @IsEmail()
   email: string;
 
@@ -13,20 +12,16 @@ export class SignUpDto {
   password: string;
 }
 
-export class AdminSignUpDto extends SignUpDto {}
-
-export class UserSignUpDto extends SignUpDto {
+export class UserSignUpDto {
   @IsNotEmpty()
-  phone_number: string;
+  fullname: string;
 
-  is_operator?: boolean;
-}
-
-export class EditUserDto {
-  username?: string;
-  fullname?: string;
   @IsEmail()
-  email?: string;
-  profile_picture?: ObjectId;
-  phone_number?: string;
+  email: string;
+
+  @IsNotEmpty()
+  contact: string;
+
+  @IsNotEmpty()
+  password: string;
 }

@@ -25,6 +25,6 @@ export class AdminController {
 
   @Get('/me')
   async getMe(@Req() req: any) {
-    return CoreApiResponse.success(req.admin);
+    return CoreApiResponse.success({ admin: req.admin });
   }
 }
