@@ -48,9 +48,9 @@ export class UserUseCaseService {
     return user;
   }
 
-  async findUserById(id: ObjectId) {
+  async findUserById(userId: ObjectId) {
     const user = await this.userRepository.findOneBy({
-      _id: id,
+      _id: userId,
     });
     if (!user) {
       throw new NotFoundException('user does not exist');

@@ -21,11 +21,4 @@ export class AmbulanceEntity extends BaseEntity {
 
   @Column()
   status: AmbulanceStatusEnum;
-
-  toJSON() {
-    return {
-      ...this,
-      password: undefined,
-    };
-  }
 }
