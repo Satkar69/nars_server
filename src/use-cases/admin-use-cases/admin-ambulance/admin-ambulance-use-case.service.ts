@@ -15,6 +15,10 @@ export class AdminAmbulanceUseCaseService {
     private ambulanceRepository: Repository<AmbulanceEntity>,
   ) {}
 
+  async findAllAmbulance() {
+    return await this.ambulanceRepository.find();
+  }
+
   async createAmbulance(dto: CreateAmbulanceDto): Promise<AmbulanceEntity> {
     const newAmbulance = this.ambulanceRepository.create(dto);
     return await this.ambulanceRepository.save(newAmbulance);
