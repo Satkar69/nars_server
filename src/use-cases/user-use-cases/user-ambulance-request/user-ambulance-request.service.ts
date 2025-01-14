@@ -1,9 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
+import { AmbulanceRequestStatusEnum } from 'src/common/enums/ambulance-request-status.enum';
+import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
+import {
+  CreateAmbulanceRequestDto,
+  EditAmbulanceRequestDto,
+} from 'src/core/dtos/request/ambulance-request.dto';
 import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
-import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,10 +19,78 @@ export class UserAmbulanceRequestUseCaseService {
 
     @InjectRepository(AmbulanceEntity)
     private ambulanceReposiroty: Repository<AmbulanceEntity>,
-
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
   ) {}
 
-  async createAmbulanceRequest(userId: ObjectId) {}
+  async findMyAmbulanceRequest(userId: ObjectId) {
+    const ambulanceRequest = await this.ambulanceRequestRepository.findOne({
+      where: { requester: userId },
+    });
+
+    if (!ambulanceRequest)
+      throw new NotFoundException('ambulance request does not exist');
+
+    return ambulanceRequest;
+  }
+
+  async createAmbulanceRequest(
+    userId: ObjectId,
+    dto: CreateAmbulanceRequestDto,
+  ): Promise<AmbulanceRequestEntity> {
+    const ambulance = await this.ambulanceReposiroty.findOneBy({
+      _id: convertToObjectId(dto.ambulance),
+    });
+
+    if (!ambulance) throw new NotFoundException('ambulance not found');
+
+    const newAmbulanceRequest = this.ambulanceRequestRepository.create({
+      ...dto,
+      ambulance: ambulance._id,
+      requester: userId,
+      status: AmbulanceRequestStatusEnum.PENDING,
+    });
+
+    return await this.ambulanceRequestRepository.save(newAmbulanceRequest);
+  }
+
+  async updateAmbulanceRequest(
+    ambulanceRequestId: string,
+    dto: EditAmbulanceRequestDto,
+  ) {
+    const ambulanceRequest = await this.ambulanceRequestRepository.findOneBy({
+      _id: convertToObjectId(ambulanceRequestId),
+    });
+
+    if (!ambulanceRequest)
+      throw new NotFoundException('ambulance request does not exist');
+
+    const updatedAmbulanceRequest = { ...ambulanceRequest, ...dto };
+
+    await this.ambulanceRequestRepository.update(
+      { _id: ambulanceRequest._id },
+      updatedAmbulanceRequest,
+    );
+
+    return updatedAmbulanceRequest;
+  }
+
+  async deleteAmbulanceRequest(ambulanceRequestId: string) {
+    const ambulanceRequest = await this.ambulanceRequestRepository.findOneBy({
+      _id: convertToObjectId(ambulanceRequestId),
+    });
+
+    if (!ambulanceRequest)
+      throw new NotFoundException('ambulance request does not exist');
+
+    const deletedAmbulanceRequest = {
+      ...ambulanceRequest,
+      deletedAt: new Date(),
+    };
+
+    await this.ambulanceRequestRepository.update(
+      { _id: ambulanceRequest._id },
+      deletedAmbulanceRequest,
+    );
+
+    return deletedAmbulanceRequest;
+  }
 }

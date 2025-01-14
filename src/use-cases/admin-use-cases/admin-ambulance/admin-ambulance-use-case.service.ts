@@ -6,6 +6,7 @@ import {
   EditAmbulanceDto,
 } from 'src/core/dtos/request/ambulance.dto';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
+import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -13,10 +14,13 @@ export class AdminAmbulanceUseCaseService {
   constructor(
     @InjectRepository(AmbulanceEntity)
     private ambulanceRepository: Repository<AmbulanceEntity>,
+
+    private bcryptService: BcryptService,
   ) {}
 
   async createAmbulance(dto: CreateAmbulanceDto): Promise<AmbulanceEntity> {
     const newAmbulance = this.ambulanceRepository.create(dto);
+    newAmbulance.password = await this.bcryptService.hash(dto.password);
     return await this.ambulanceRepository.save(newAmbulance);
   }
 
