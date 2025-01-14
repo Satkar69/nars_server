@@ -3,7 +3,8 @@ import { AdminAmbulanceUseCaseService } from './admin-ambulance-use-case.service
 import { CryptoModule } from 'src/libs/crypto/crypto.module';
 
 @Module({
-  providers: [CryptoModule, AdminAmbulanceUseCaseService],
+  imports: [CryptoModule],
+  providers: [AdminAmbulanceUseCaseService],
   exports: [AdminAmbulanceUseCaseService],
 })
 export class AdminAmbulanceUseCaseModule {}

@@ -15,3 +15,5 @@ export class UserSignInDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class AmbulanceSignInDto extends UserSignInDto {}
