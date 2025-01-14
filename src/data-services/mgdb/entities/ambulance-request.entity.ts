@@ -12,9 +12,6 @@ export class AmbulanceRequestEntity extends BaseEntity {
   requester: ObjectId;
 
   @Column()
-  ambulance_number: string;
-
-  @Column()
   hospital_location: {
     latitude: string;
     longitude: string;
@@ -22,11 +19,4 @@ export class AmbulanceRequestEntity extends BaseEntity {
 
   @Column()
   status: AmbulanceRequestStatusEnum;
-
-  toJSON() {
-    return {
-      ...this,
-      password: undefined,
-    };
-  }
 }

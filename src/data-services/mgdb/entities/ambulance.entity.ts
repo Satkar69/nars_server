@@ -7,11 +7,14 @@ export class AmbulanceEntity extends BaseEntity {
   @Column()
   driver_name: string;
 
-  @Column()
+  @Column({ unique: true })
   ambulance_number: string;
 
-  @Column()
+  @Column({ unique: true })
   contact: string;
+
+  @Column()
+  password: string;
 
   @Column()
   location: {

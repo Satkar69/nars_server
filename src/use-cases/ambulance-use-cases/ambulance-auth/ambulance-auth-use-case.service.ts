@@ -4,42 +4,38 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import { AdminSignInDto } from 'src/core/dtos/request/signin.dto';
-import { AdminEntity } from 'src/data-services/mgdb/entities/admin.entity';
+import { AmbulanceSignInDto } from 'src/core/dtos/request/signin.dto';
+import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
 import { JwtTokenService } from 'src/libs/token/jwt/jwt-token.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class AdminAuthUseCaseService {
+export class AmbulanceAuthUseCaseService {
   constructor(
     private bcryptService: BcryptService,
     private jwtTokenService: JwtTokenService,
-    @InjectRepository(AdminEntity)
-    private adminRepository: Repository<AdminEntity>,
+    @InjectRepository(AmbulanceEntity)
+    private ambulanceRepository: Repository<AmbulanceEntity>,
   ) {}
 
-  async signIn(dto: AdminSignInDto) {
-    const admin = await this.adminRepository.findOne({
-      where: { username: dto.username },
+  async signIn(dto: AmbulanceSignInDto) {
+    const ambulance = await this.ambulanceRepository.findOne({
+      where: { contact: dto.contact },
     });
 
-    if (!admin) throw new NotFoundException('admin does not exist.');
+    if (!ambulance) throw new NotFoundException('ambulance does not exist.');
 
     const isPasswordMatched = await this.bcryptService.compare(
       dto.password,
-      admin.password,
+      ambulance.password,
     );
 
     if (!isPasswordMatched)
       throw new UnauthorizedException('password is incorrect.');
 
-    const payload = { _id: admin._id };
+    const payload = { _id: ambulance._id };
     const accessToken = await this.jwtTokenService.createToken(payload);
-    return {
-      accessToken,
-      admin,
-    };
+    return { accessToken, ambulance };
   }
 }

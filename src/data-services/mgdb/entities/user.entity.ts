@@ -6,10 +6,10 @@ export class UserEntity extends BaseEntity {
   @Column()
   fullname: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ unique: true })
   contact: string;
 
   @Column()

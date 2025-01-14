@@ -23,9 +23,9 @@ export class AdminUseCaseService {
       username: dto.username,
     });
 
-    if (admin) {
-      throw new ConflictException('admin already exists.');
-    }
+    // if (admin) {
+    //   throw new ConflictException('admin already exists.');
+    // }
 
     const newAdmin = this.adminRepository.create(dto);
     newAdmin.password = await this.bcryptService.hash(dto.password);
@@ -48,9 +48,9 @@ export class AdminUseCaseService {
     return admin;
   }
 
-  async findAdminById(id: ObjectId) {
+  async findAdminById(adminId: ObjectId) {
     const admin = await this.adminRepository.findOneBy({
-      _id: id,
+      _id: adminId,
     });
     if (!admin) {
       throw new NotFoundException('admin does not exist');

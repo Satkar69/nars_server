@@ -14,6 +14,8 @@ import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { Repository } from 'typeorm';
 import { AdminEntity } from 'src/data-services/mgdb/entities/admin.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
+import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -23,6 +25,12 @@ export class AuthGuard implements CanActivate {
 
     @InjectRepository(AdminEntity)
     private adminRepository: Repository<AdminEntity>,
+
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+
+    @InjectRepository(AmbulanceEntity)
+    private ambulanceRepository: Repository<AmbulanceEntity>,
   ) {}
 
   private extractToken(request: Request): string | undefined {
@@ -36,7 +44,8 @@ export class AuthGuard implements CanActivate {
 
     const isPublic =
       requestUrl.startsWith('/api/nars/auth') ||
-      requestUrl.startsWith('/api/nars/admin/create')
+      requestUrl.startsWith('/api/nars/admin/create') ||
+      requestUrl.startsWith('/api/nars/user/create')
         ? true
         : false ||
           this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -52,8 +61,15 @@ export class AuthGuard implements CanActivate {
 
     const isAdmin = requestUrl.startsWith('/api/nars/admin') ? true : false;
 
+    const isUser = requestUrl.startsWith('/api/nars/user') ? true : false;
+
+    const isAmbulance = requestUrl.startsWith('/api/nars/ambulance')
+      ? true
+      : false;
+
     try {
       const decoded = await this.jwtTokenService.checkToken(token);
+
       if (isAdmin) {
         const admin = await this.adminRepository.findOneBy({
           _id: convertToObjectId(decoded._id),
@@ -62,6 +78,22 @@ export class AuthGuard implements CanActivate {
         if (!admin) throw new NotFoundException('admin does not exist');
 
         request.admin = admin;
+      } else if (isUser) {
+        const user = await this.userRepository.findOneBy({
+          _id: convertToObjectId(decoded._id),
+        });
+
+        if (!user) throw new NotFoundException('user does not exist');
+
+        request.user = user;
+      } else if (isAmbulance) {
+        const ambulance = await this.ambulanceRepository.findOneBy({
+          _id: convertToObjectId(decoded._id),
+        });
+
+        if (!ambulance) throw new NotFoundException('ambulance does not exist');
+
+        request.ambulance = ambulance;
       }
     } catch (error) {
       Logger.error(error.message);
