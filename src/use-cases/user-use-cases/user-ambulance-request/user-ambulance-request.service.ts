@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 import { AmbulanceRequestStatusEnum } from 'src/common/enums/ambulance-request-status.enum';
+import { AmbulanceStatusEnum } from 'src/common/enums/ambulance-status.enum';
 import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import {
   CreateAmbulanceRequestDto,
@@ -41,6 +42,9 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (!ambulance) throw new NotFoundException('ambulance not found');
+
+    if (ambulance.status !== AmbulanceStatusEnum.AVAILABLE)
+      throw new Error('this ambulance is not available');
 
     const newAmbulanceRequest = this.ambulanceRequestRepository.create({
       ...dto,
