@@ -20,15 +20,4 @@ export class AmbulanceRequestUseCaseService {
 
     return ambulanceRequests;
   }
-
-  //   async approveRequest(ambulanceRequestId: string) {
-  //     const ambulanceRequest = await this.ambulanceRequestRepository.findOneBy({
-  //       _id: convertToObjectId(ambulanceRequestId),
-  //     });
-
-  //     const approvedRequest = {
-  //       ...ambulanceRequest,
-  //       status: AmbulanceRequestStatusEnum.ENROUTE,
-  //     };
-  //   }
 }
