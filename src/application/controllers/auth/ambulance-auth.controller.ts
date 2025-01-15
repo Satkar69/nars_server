@@ -10,7 +10,6 @@ export class AmbulanceAuthController {
   ) {}
   @Post('/signin')
   async adminSignIn(@Body() dto: AmbulanceSignInDto) {
-    console.log('I am here----------------');
     return CoreApiResponse.success(
       await this.ambulanceAuthUseCaseService.signIn(dto),
       200,

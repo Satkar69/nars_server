@@ -6,7 +6,7 @@ export class CreateAmbulanceDto {
   ambulance_numnber: String;
   contact: string;
   password: string;
-  location: GeoDataInterface;
+  location?: GeoDataInterface;
   status: AmbulanceStatusEnum;
 }
 
