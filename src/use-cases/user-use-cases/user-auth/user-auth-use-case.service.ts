@@ -1,14 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSignInDto } from 'src/core/dtos/request/signin.dto';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
 import { JwtTokenService } from 'src/libs/token/jwt/jwt-token.service';
 import { Repository } from 'typeorm';
+import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 
 @Injectable()
 export class UserAuthUseCaseService {
@@ -24,7 +21,7 @@ export class UserAuthUseCaseService {
       where: { contact: dto.contact },
     });
 
-    if (!user) throw new NotFoundException('user does not exist.');
+    if (!user) throw new AppNotFoundException('user does not exist.');
 
     const isPasswordMatched = await this.bcryptService.compare(
       dto.password,
