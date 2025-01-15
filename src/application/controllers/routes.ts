@@ -2,6 +2,7 @@ import { Routes } from '@nestjs/core';
 import { AuthControllerModule } from './auth/auth-controller.module';
 import { AdminControllerModule } from './admin/admin-controller.module';
 import { UserControllerModule } from './user/user-contoller.module';
+import { AmbulanceControllerModule } from './ambulance/ambulance-controller.module';
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
       {
         path: '/user',
         children: [UserControllerModule],
+      },
+      {
+        path: '/ambulance',
+        children: [AmbulanceControllerModule],
       },
     ],
   },
