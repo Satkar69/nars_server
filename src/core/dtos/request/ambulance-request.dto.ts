@@ -3,7 +3,6 @@ import { GeoDataInterface } from 'src/common/interface/geodata.interface';
 
 export class CreateAmbulanceRequestDto {
   ambulance: string;
-  requester: string;
   hospital_location: GeoDataInterface;
   status: AmbulanceRequestStatusEnum;
 }

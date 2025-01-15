@@ -12,6 +12,7 @@ import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulanc
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { Repository } from 'typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
+import AppException from 'src/application/exception/app.exception';
 
 @Injectable()
 export class UserAmbulanceRequestUseCaseService {
@@ -25,7 +26,7 @@ export class UserAmbulanceRequestUseCaseService {
 
   async findMyAmbulanceRequest(userId: ObjectId) {
     const ambulanceRequest = await this.ambulanceRequestRepository.findOne({
-      where: { requester: userId },
+      where: { requester: userId, deletedAt: null },
     });
 
     if (!ambulanceRequest)
@@ -43,6 +44,13 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (!ambulance) throw new AppNotFoundException('ambulance not found');
+
+    const ambulanceRequest = await this.ambulanceRequestRepository.findOne({
+      where: { requester: userId, deletedAt: null },
+    });
+
+    if (ambulanceRequest)
+      throw new AppException({}, 'an ambulance request already exists', 409);
 
     if (ambulance.status !== AmbulanceStatusEnum.AVAILABLE)
       throw new Error('this ambulance is not available');
