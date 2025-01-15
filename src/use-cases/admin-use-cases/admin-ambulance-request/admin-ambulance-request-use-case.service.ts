@@ -12,7 +12,9 @@ export class AdminAmbulanceRequestUseCaseService {
   ) {}
 
   async findAllAmbulanceRequests() {
-    return await this.ambulanceRequestRepository.find();
+    return await this.ambulanceRequestRepository.find({
+      where: { deletedAt: null },
+    });
   }
 
   async findAmbulanceRequestById(ambulanceRequestId: string) {
