@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import AppNotFoundException from 'src/application/exception/app-not-found.exception';
+import { AmbulanceStatusEnum } from 'src/common/enums/ambulance-status.enum';
 import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import {
   CreateAmbulanceDto,
@@ -19,8 +21,12 @@ export class AdminAmbulanceUseCaseService {
   ) {}
 
   async createAmbulance(dto: CreateAmbulanceDto): Promise<AmbulanceEntity> {
-    const newAmbulance = this.ambulanceRepository.create(dto);
-    newAmbulance.password = await this.bcryptService.hash(dto.password);
+    const hashedPassword = await this.bcryptService.hash(dto.password);
+    const newAmbulance = this.ambulanceRepository.create({
+      ...dto,
+      password: hashedPassword,
+      status: AmbulanceStatusEnum.AVAILABLE,
+    });
     return await this.ambulanceRepository.save(newAmbulance);
   }
 
@@ -30,7 +36,7 @@ export class AdminAmbulanceUseCaseService {
     });
 
     if (!ambulance)
-      throw new NotFoundException('ambulance with this id does not exist');
+      throw new AppNotFoundException('ambulance with this id does not exist');
 
     const updatedAmbulance = { ...ambulance, dto };
 
@@ -48,7 +54,7 @@ export class AdminAmbulanceUseCaseService {
     });
 
     if (!ambulance)
-      throw new NotFoundException('ambulance with this id does not exist');
+      throw new AppNotFoundException('ambulance with this id does not exist');
 
     const deletedAmbulance = { ...ambulance, deletedAt: new Date() };
 

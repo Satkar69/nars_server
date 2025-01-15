@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 import { AmbulanceRequestStatusEnum } from 'src/common/enums/ambulance-request-status.enum';
@@ -11,6 +11,7 @@ import {
 import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { Repository } from 'typeorm';
+import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 
 @Injectable()
 export class UserAmbulanceRequestUseCaseService {
@@ -28,7 +29,7 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (!ambulanceRequest)
-      throw new NotFoundException('ambulance request does not exist');
+      throw new AppNotFoundException('ambulance request does not exist');
 
     return ambulanceRequest;
   }
@@ -41,7 +42,7 @@ export class UserAmbulanceRequestUseCaseService {
       _id: convertToObjectId(dto.ambulance),
     });
 
-    if (!ambulance) throw new NotFoundException('ambulance not found');
+    if (!ambulance) throw new AppNotFoundException('ambulance not found');
 
     if (ambulance.status !== AmbulanceStatusEnum.AVAILABLE)
       throw new Error('this ambulance is not available');
@@ -65,7 +66,7 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (!ambulanceRequest)
-      throw new NotFoundException('ambulance request does not exist');
+      throw new AppNotFoundException('ambulance request does not exist');
 
     const updatedAmbulanceRequest = { ...ambulanceRequest, ...dto };
 
@@ -83,7 +84,7 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (!ambulanceRequest)
-      throw new NotFoundException('ambulance request does not exist');
+      throw new AppNotFoundException('ambulance request does not exist');
 
     const deletedAmbulanceRequest = {
       ...ambulanceRequest,

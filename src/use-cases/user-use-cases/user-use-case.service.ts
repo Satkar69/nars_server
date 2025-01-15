@@ -1,9 +1,6 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 import { UserSignUpDto } from 'src/core/dtos/request/signup.dto';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
@@ -43,7 +40,7 @@ export class UserUseCaseService {
       contact: contact,
     });
     if (!user) {
-      throw new NotFoundException('user does not exist');
+      throw new AppNotFoundException('user does not exist');
     }
     return user;
   }
@@ -53,7 +50,7 @@ export class UserUseCaseService {
       _id: userId,
     });
     if (!user) {
-      throw new NotFoundException('user does not exist');
+      throw new AppNotFoundException('user does not exist');
     }
     return user;
   }

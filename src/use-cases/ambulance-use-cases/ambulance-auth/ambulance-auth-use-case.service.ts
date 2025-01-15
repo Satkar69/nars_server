@@ -1,9 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 import { AmbulanceSignInDto } from 'src/core/dtos/request/signin.dto';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
@@ -24,7 +21,10 @@ export class AmbulanceAuthUseCaseService {
       where: { contact: dto.contact },
     });
 
-    if (!ambulance) throw new NotFoundException('ambulance does not exist.');
+    if (!ambulance)
+      throw new AppNotFoundException(
+        'no ambulance with provided contact is available.',
+      );
 
     const isPasswordMatched = await this.bcryptService.compare(
       dto.password,
