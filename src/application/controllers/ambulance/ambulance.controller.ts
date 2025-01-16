@@ -21,4 +21,9 @@ export class AmbulanceController {
       await this.ambulanceUseCaseService.findAmbulanceById(ambulanceId),
     );
   }
+
+  @Get('/me')
+  async getMe(@Req() req: any) {
+    return CoreApiResponse.success({ ambulance: req.ambulance });
+  }
 }
