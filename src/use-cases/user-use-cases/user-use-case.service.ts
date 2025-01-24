@@ -1,10 +1,13 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
+import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { UserSignUpDto } from 'src/core/dtos/request/signup.dto';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
 import { ObjectId, Repository } from 'typeorm';
+
+// TODO :: Update user
 
 @Injectable()
 export class UserUseCaseService {
@@ -45,9 +48,9 @@ export class UserUseCaseService {
     return user;
   }
 
-  async findUserById(userId: ObjectId) {
+  async findUserById(userId: string) {
     const user = await this.userRepository.findOneBy({
-      _id: userId,
+      _id: convertToObjectId(userId),
     });
     if (!user) {
       throw new AppNotFoundException('user does not exist');

@@ -18,7 +18,7 @@ export class AmbulanceAuthUseCaseService {
 
   async signIn(dto: AmbulanceSignInDto) {
     const ambulance = await this.ambulanceRepository.findOne({
-      where: { contact: dto.contact },
+      where: { contact: dto.contact, deletedAt: null },
     });
 
     if (!ambulance)
