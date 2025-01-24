@@ -4,6 +4,8 @@ import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { Repository } from 'typeorm';
 
+// TODO :: real time ambulance location data logic
+
 @Injectable()
 export class AmbulanceUseCaseService {
   constructor(

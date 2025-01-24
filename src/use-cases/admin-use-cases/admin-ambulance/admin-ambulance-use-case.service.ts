@@ -38,7 +38,7 @@ export class AdminAmbulanceUseCaseService {
     if (!ambulance)
       throw new AppNotFoundException('ambulance with this id does not exist');
 
-    const updatedAmbulance = { ...ambulance, dto };
+    const updatedAmbulance = { ...ambulance, ...dto };
 
     await this.ambulanceRepository.update(
       { _id: ambulance._id },
