@@ -7,6 +7,8 @@ import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
 import { ObjectId, Repository } from 'typeorm';
 
+// TODO :: Update user
+
 @Injectable()
 export class UserUseCaseService {
   constructor(
