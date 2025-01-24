@@ -14,7 +14,7 @@ export class AmbulanceUseCaseService {
   ) {}
 
   async findAllAmbulance() {
-    return await this.ambulanceRepository.find();
+    return await this.ambulanceRepository.find({ where: { deletedAt: null } });
   }
 
   async findAmbulanceById(ambulanceId: string) {

@@ -24,4 +24,6 @@ export class UserSignUpDto {
 
   @IsNotEmpty()
   password: string;
+
+  location: GeoDataInterface;
 }

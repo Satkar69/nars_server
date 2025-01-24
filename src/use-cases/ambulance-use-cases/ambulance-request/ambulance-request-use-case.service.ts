@@ -8,6 +8,7 @@ import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { EditAmbulanceRequestDto } from 'src/core/dtos/request/ambulance-request.dto';
 import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
+import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { Repository } from 'typeorm';
 
 // TODO :: ambulance arival time logic
@@ -20,6 +21,9 @@ export class AmbulanceRequestUseCaseService {
 
     @InjectRepository(AmbulanceEntity)
     private ambulanceRepository: Repository<AmbulanceEntity>,
+
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async findMyRequests(ambulanceId: ObjectId) {
@@ -27,7 +31,16 @@ export class AmbulanceRequestUseCaseService {
       where: { ambulance: ambulanceId },
     });
 
-    return ambulanceRequests;
+    return await Promise.all(
+      ambulanceRequests.map(async (ambulanceRequest) => {
+        const requester = await this.userRepository.findOne({
+          where: { _id: ambulanceRequest.requester },
+          select: ['fullname', 'email', 'contact', 'location'],
+        });
+
+        return { ...ambulanceRequest, requester };
+      }),
+    );
   }
 
   async ambulanceRequestAction(
