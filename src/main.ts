@@ -1,4 +1,4 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationException } from './application/exception/validation.exception';
@@ -14,7 +14,7 @@ async function bootstrap() {
 
   // -- Cors setup
   app.enableCors({
-    origin: ['*', 'http://localhost:3001'],
+    origin: ['*', 'http://localhost:3001', 'https://nars-fe.vercel.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
