@@ -13,6 +13,7 @@ import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entit
 import { Repository } from 'typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 import AppException from 'src/application/exception/app.exception';
+import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 
 @Injectable()
 export class UserAmbulanceRequestUseCaseService {
@@ -22,6 +23,9 @@ export class UserAmbulanceRequestUseCaseService {
 
     @InjectRepository(AmbulanceEntity)
     private ambulanceReposiroty: Repository<AmbulanceEntity>,
+
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async findMyAmbulanceRequest(userId: ObjectId) {
@@ -32,7 +36,11 @@ export class UserAmbulanceRequestUseCaseService {
     if (!ambulanceRequest)
       throw new AppNotFoundException('ambulance request does not exist');
 
-    return ambulanceRequest;
+    const user = await this.userRepository.findOneBy({
+      _id: ambulanceRequest.requester,
+    });
+
+    return { ...ambulanceRequest, requester: user };
   }
 
   async createAmbulanceRequest(
