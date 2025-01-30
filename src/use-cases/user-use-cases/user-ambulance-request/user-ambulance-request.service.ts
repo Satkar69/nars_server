@@ -10,7 +10,7 @@ import {
 } from 'src/core/dtos/request/ambulance-request.dto';
 import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 import AppException from 'src/application/exception/app.exception';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
@@ -19,13 +19,13 @@ import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 export class UserAmbulanceRequestUseCaseService {
   constructor(
     @InjectRepository(AmbulanceRequestEntity)
-    private ambulanceRequestRepository: Repository<AmbulanceRequestEntity>,
+    private ambulanceRequestRepository: MongoRepository<AmbulanceRequestEntity>,
 
     @InjectRepository(AmbulanceEntity)
-    private ambulanceReposiroty: Repository<AmbulanceEntity>,
+    private ambulanceReposiroty: MongoRepository<AmbulanceEntity>,
 
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: MongoRepository<UserEntity>,
   ) {}
 
   async findMyAmbulanceRequest(userId: ObjectId) {

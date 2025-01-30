@@ -5,7 +5,7 @@ import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { UserSignUpDto } from 'src/core/dtos/request/signup.dto';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
-import { ObjectId, Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 
 // TODO :: Update user
 
@@ -15,7 +15,7 @@ export class UserUseCaseService {
     private bcryptService: BcryptService,
 
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: MongoRepository<UserEntity>,
   ) {}
 
   async UserSignUp(dto: UserSignUpDto) {

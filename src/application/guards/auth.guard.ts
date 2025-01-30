@@ -10,7 +10,7 @@ import { IS_PUBLIC_KEY } from 'src/application/decorators/public.decorator';
 import { JwtTokenService } from 'src/libs/token/jwt/jwt-token.service';
 import { Request } from 'express';
 import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import { AdminEntity } from 'src/data-services/mgdb/entities/admin.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
@@ -24,13 +24,13 @@ export class AuthGuard implements CanActivate {
     private reflector: Reflector,
 
     @InjectRepository(AdminEntity)
-    private adminRepository: Repository<AdminEntity>,
+    private adminRepository: MongoRepository<AdminEntity>,
 
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: MongoRepository<UserEntity>,
 
     @InjectRepository(AmbulanceEntity)
-    private ambulanceRepository: Repository<AmbulanceEntity>,
+    private ambulanceRepository: MongoRepository<AmbulanceEntity>,
   ) {}
 
   private extractToken(request: Request): string | undefined {

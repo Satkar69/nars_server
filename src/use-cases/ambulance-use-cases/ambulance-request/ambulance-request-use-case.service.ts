@@ -9,7 +9,7 @@ import { EditAmbulanceRequestDto } from 'src/core/dtos/request/ambulance-request
 import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 
 // TODO :: ambulance arival time logic
 
@@ -17,13 +17,13 @@ import { Repository } from 'typeorm';
 export class AmbulanceRequestUseCaseService {
   constructor(
     @InjectRepository(AmbulanceRequestEntity)
-    private ambulanceRequestRepository: Repository<AmbulanceRequestEntity>,
+    private ambulanceRequestRepository: MongoRepository<AmbulanceRequestEntity>,
 
     @InjectRepository(AmbulanceEntity)
-    private ambulanceRepository: Repository<AmbulanceEntity>,
+    private ambulanceRepository: MongoRepository<AmbulanceEntity>,
 
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: MongoRepository<UserEntity>,
   ) {}
 
   async findMyRequests(ambulanceId: ObjectId) {

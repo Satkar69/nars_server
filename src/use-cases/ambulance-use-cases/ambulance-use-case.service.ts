@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 
 // TODO :: real time ambulance location data logic
 
@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 export class AmbulanceUseCaseService {
   constructor(
     @InjectRepository(AmbulanceEntity)
-    private ambulanceRepository: Repository<AmbulanceEntity>,
+    private ambulanceRepository: MongoRepository<AmbulanceEntity>,
   ) {}
 
   async findAllAmbulance() {
