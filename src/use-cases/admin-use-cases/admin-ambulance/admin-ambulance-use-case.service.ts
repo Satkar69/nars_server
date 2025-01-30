@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 import { AmbulanceStatusEnum } from 'src/common/enums/ambulance-status.enum';
@@ -21,6 +21,20 @@ export class AdminAmbulanceUseCaseService {
   ) {}
 
   async createAmbulance(dto: CreateAmbulanceDto): Promise<AmbulanceEntity> {
+    const existingAmbulance = await this.ambulanceRepository.findOne({
+      where: {
+        $or: [
+          { ambulance_number: dto.ambulance_numnber },
+          { contact: dto.contact },
+        ],
+      },
+    });
+
+    if (existingAmbulance)
+      throw new ConflictException(
+        'Ambulance with the given ambulance number or the contact already exists',
+      );
+
     const hashedPassword = await this.bcryptService.hash(dto.password);
     const newAmbulance = this.ambulanceRepository.create({
       ...dto,
