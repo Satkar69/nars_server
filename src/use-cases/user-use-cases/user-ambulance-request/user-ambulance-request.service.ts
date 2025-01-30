@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 import { AmbulanceRequestStatusEnum } from 'src/common/enums/ambulance-request-status.enum';
@@ -12,7 +12,6 @@ import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulanc
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { MongoRepository } from 'typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
-import AppException from 'src/application/exception/app.exception';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 
 @Injectable()
@@ -58,7 +57,7 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (ambulanceRequest)
-      throw new AppException({}, 'an ambulance request already exists', 409);
+      throw new ConflictException('an ambulance request already exists');
 
     if (ambulance.status !== AmbulanceStatusEnum.AVAILABLE)
       throw new Error('this ambulance is not available');
