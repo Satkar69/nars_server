@@ -4,19 +4,19 @@ import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class AdminAmbulanceRequestUseCaseService {
   constructor(
     @InjectRepository(AmbulanceRequestEntity)
-    private ambulanceRequestRepository: Repository<AmbulanceRequestEntity>,
+    private ambulanceRequestRepository: MongoRepository<AmbulanceRequestEntity>,
 
     @InjectRepository(AmbulanceEntity)
-    private ambulanceRepository: Repository<AmbulanceEntity>,
+    private ambulanceRepository: MongoRepository<AmbulanceEntity>,
 
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: MongoRepository<UserEntity>,
   ) {}
 
   async findAllAmbulanceRequests() {

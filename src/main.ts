@@ -14,7 +14,7 @@ async function bootstrap() {
 
   // -- Cors setup
   app.enableCors({
-    origin: ['*', 'http://localhost:3001', 'https://nars-fe.vercel.app'],
+    origin: ['*', 'http://localhost:3001', 'http://localhost:3000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

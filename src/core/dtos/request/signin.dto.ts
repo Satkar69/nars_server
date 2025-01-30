@@ -1,4 +1,12 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Validate,
+  ValidationError,
+} from 'class-validator';
+import AppException from 'src/application/exception/app.exception';
 
 export class AdminSignInDto {
   @IsNotEmpty()
@@ -9,8 +17,12 @@ export class AdminSignInDto {
 }
 
 export class UserSignInDto {
-  @IsNotEmpty()
+  @IsOptional()
   contact: string;
+
+  @IsOptional()
+  @IsEmail()
+  email: string;
 
   @IsNotEmpty()
   password: string;

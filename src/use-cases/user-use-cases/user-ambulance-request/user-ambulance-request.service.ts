@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
 import { AmbulanceRequestStatusEnum } from 'src/common/enums/ambulance-request-status.enum';
@@ -10,22 +10,21 @@ import {
 } from 'src/core/dtos/request/ambulance-request.dto';
 import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
-import AppException from 'src/application/exception/app.exception';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 
 @Injectable()
 export class UserAmbulanceRequestUseCaseService {
   constructor(
     @InjectRepository(AmbulanceRequestEntity)
-    private ambulanceRequestRepository: Repository<AmbulanceRequestEntity>,
+    private ambulanceRequestRepository: MongoRepository<AmbulanceRequestEntity>,
 
     @InjectRepository(AmbulanceEntity)
-    private ambulanceReposiroty: Repository<AmbulanceEntity>,
+    private ambulanceReposiroty: MongoRepository<AmbulanceEntity>,
 
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    private userRepository: MongoRepository<UserEntity>,
   ) {}
 
   async findMyAmbulanceRequest(userId: ObjectId) {
@@ -34,7 +33,7 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (!ambulanceRequest)
-      throw new AppNotFoundException('ambulance request does not exist');
+      throw new AppNotFoundException('you have not made any ambulance request');
 
     const user = await this.userRepository.findOneBy({
       _id: ambulanceRequest.requester,
@@ -58,7 +57,7 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (ambulanceRequest)
-      throw new AppException({}, 'an ambulance request already exists', 409);
+      throw new ConflictException('an ambulance request already exists');
 
     if (ambulance.status !== AmbulanceStatusEnum.AVAILABLE)
       throw new Error('this ambulance is not available');
@@ -67,6 +66,7 @@ export class UserAmbulanceRequestUseCaseService {
       ...dto,
       ambulance: ambulance._id,
       requester: userId,
+      emergency_status: dto.emergency_status,
       status: AmbulanceRequestStatusEnum.PENDING,
     });
 
