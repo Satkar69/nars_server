@@ -5,7 +5,7 @@ import { AmbulanceSignInDto } from 'src/core/dtos/request/signin.dto';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
 import { JwtTokenService } from 'src/libs/token/jwt/jwt-token.service';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class AmbulanceAuthUseCaseService {
@@ -13,7 +13,7 @@ export class AmbulanceAuthUseCaseService {
     private bcryptService: BcryptService,
     private jwtTokenService: JwtTokenService,
     @InjectRepository(AmbulanceEntity)
-    private ambulanceRepository: Repository<AmbulanceEntity>,
+    private ambulanceRepository: MongoRepository<AmbulanceEntity>,
   ) {}
 
   async signIn(dto: AmbulanceSignInDto) {
