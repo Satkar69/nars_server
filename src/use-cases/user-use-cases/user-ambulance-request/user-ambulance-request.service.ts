@@ -33,7 +33,7 @@ export class UserAmbulanceRequestUseCaseService {
     });
 
     if (!ambulanceRequest)
-      throw new AppNotFoundException('ambulance request does not exist');
+      throw new AppNotFoundException('you have not made any ambulance request');
 
     const user = await this.userRepository.findOneBy({
       _id: ambulanceRequest.requester,
@@ -66,6 +66,7 @@ export class UserAmbulanceRequestUseCaseService {
       ...dto,
       ambulance: ambulance._id,
       requester: userId,
+      emergency_status: dto.emergency_status,
       status: AmbulanceRequestStatusEnum.PENDING,
     });
 

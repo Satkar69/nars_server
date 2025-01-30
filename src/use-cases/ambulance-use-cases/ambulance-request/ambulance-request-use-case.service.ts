@@ -12,6 +12,7 @@ import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
 import { MongoRepository } from 'typeorm';
 
 // TODO :: ambulance arival time logic
+// TODO :: list and order the ambulance requests by the emergency status
 
 @Injectable()
 export class AmbulanceRequestUseCaseService {
