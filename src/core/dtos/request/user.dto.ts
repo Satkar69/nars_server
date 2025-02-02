@@ -3,6 +3,7 @@ import { GeoDataInterface } from 'src/common/interface/geodata.interface';
 
 export class EditUserDto {
   fullname?: string;
+  @IsOptional()
   @IsEmail()
   email?: string;
   contact?: string;
