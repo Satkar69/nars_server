@@ -26,7 +26,7 @@ const routes: Routes = [
         children: [AmbulanceControllerModule],
       },
       {
-        path: '/hospitals',
+        path: '/hospital',
         children: [HospitalControllerModule],
       },
     ],

@@ -9,7 +9,7 @@ export class HospitalController {
   constructor() {}
 
   @Get('/get-all')
-  async getAllHospitals() {
+  async getAllHospital() {
     return CoreApiResponse.success(hospitalData);
   }
 }
