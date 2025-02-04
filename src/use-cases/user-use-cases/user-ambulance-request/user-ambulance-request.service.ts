@@ -66,7 +66,6 @@ export class UserAmbulanceRequestUseCaseService {
       ...dto,
       ambulance: ambulance._id,
       requester: userId,
-      emergency_status: dto.emergency_status,
       status: AmbulanceRequestStatusEnum.PENDING,
     });
 

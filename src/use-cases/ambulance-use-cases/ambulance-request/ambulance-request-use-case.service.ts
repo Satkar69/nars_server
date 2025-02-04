@@ -29,7 +29,7 @@ export class AmbulanceRequestUseCaseService {
 
   async findMyRequests(ambulanceId: ObjectId) {
     const ambulanceRequests = await this.ambulanceRequestRepository.find({
-      where: { ambulance: ambulanceId },
+      where: { ambulance: ambulanceId, deletedAt: null },
     });
 
     return await Promise.all(
