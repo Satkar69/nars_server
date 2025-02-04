@@ -4,15 +4,11 @@ import { GeoDataInterface } from 'src/common/interface/geodata.interface';
 
 export class CreateAmbulanceRequestDto {
   ambulance: string;
-  emergency_status: AmbulanceRequestEmergencyStatusEnum;
-  emergency_description: string;
   hospital_location: GeoDataInterface;
   status: AmbulanceRequestStatusEnum;
 }
 
 export class EditAmbulanceRequestDto {
-  emergency_status: AmbulanceRequestEmergencyStatusEnum;
-  emergency_description: string;
   hospital_location?: GeoDataInterface;
   status?: AmbulanceRequestStatusEnum;
 }
