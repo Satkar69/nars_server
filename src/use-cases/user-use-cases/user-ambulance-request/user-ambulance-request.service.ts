@@ -35,11 +35,15 @@ export class UserAmbulanceRequestUseCaseService {
     if (!ambulanceRequest)
       throw new AppNotFoundException('you have not made any ambulance request');
 
+    const ambulance = await this.ambulanceReposiroty.findOne({
+      where: { _id: ambulanceRequest.ambulance },
+    });
+
     const user = await this.userRepository.findOneBy({
       _id: ambulanceRequest.requester,
     });
 
-    return { ...ambulanceRequest, requester: user };
+    return { ...ambulanceRequest, ambulance: ambulance, requester: user };
   }
 
   async createAmbulanceRequest(
