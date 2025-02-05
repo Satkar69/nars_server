@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 import { convertToObjectId } from 'src/common/helpers/convert-to-object-id';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { MongoRepository } from 'typeorm';
@@ -22,7 +23,7 @@ export class AmbulanceUseCaseService {
       _id: convertToObjectId(ambulanceId),
     });
 
-    if (!ambulance) throw new NotFoundException('ambulance does not exits');
+    if (!ambulance) throw new AppNotFoundException('ambulance does not exits');
 
     return ambulance;
   }

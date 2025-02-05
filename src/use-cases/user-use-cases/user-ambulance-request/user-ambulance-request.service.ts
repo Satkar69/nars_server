@@ -13,6 +13,7 @@ import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entit
 import { MongoRepository } from 'typeorm';
 import AppNotFoundException from 'src/application/exception/app-not-found.exception';
 import { UserEntity } from 'src/data-services/mgdb/entities/user.entity';
+import AppException from 'src/application/exception/app.exception';
 
 @Injectable()
 export class UserAmbulanceRequestUseCaseService {
@@ -64,7 +65,7 @@ export class UserAmbulanceRequestUseCaseService {
       throw new ConflictException('an ambulance request already exists');
 
     if (ambulance.status !== AmbulanceStatusEnum.AVAILABLE)
-      throw new Error('this ambulance is not available');
+      throw new AppException('this ambulance is not available');
 
     const newAmbulanceRequest = this.ambulanceRequestRepository.create({
       ...dto,
