@@ -106,6 +106,15 @@ export class UserAmbulanceRequestUseCaseService {
     if (!ambulanceRequest)
       throw new AppNotFoundException('ambulance request does not exist');
 
+    const ambulance = await this.ambulanceReposiroty.findOne({
+      where: { _id: ambulanceRequest.ambulance },
+    });
+
+    await this.ambulanceReposiroty.update(
+      { _id: ambulance._id },
+      { status: AmbulanceStatusEnum.AVAILABLE },
+    );
+
     const deletedAmbulanceRequest = {
       ...ambulanceRequest,
       deletedAt: new Date(),
