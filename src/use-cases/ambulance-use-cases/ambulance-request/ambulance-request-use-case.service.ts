@@ -74,6 +74,11 @@ export class AmbulanceRequestUseCaseService {
               ? AmbulanceRequestStatusEnum.COMPLETED
               : ambulanceRequest.status
         : ambulanceRequest.status,
+      deletedAt: dto.status
+        ? dto.status === AmbulanceRequestStatusEnum.COMPLETED
+          ? new Date()
+          : ambulanceRequest.deletedAt
+        : ambulanceRequest.deletedAt,
     };
 
     await this.ambulanceRequestRepository.update(
