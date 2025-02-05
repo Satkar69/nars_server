@@ -7,15 +7,19 @@ import {
   CreateAmbulanceDto,
   EditAmbulanceDto,
 } from 'src/core/dtos/request/ambulance.dto';
+import { AmbulanceRequestEntity } from 'src/data-services/mgdb/entities/ambulance-request.entity';
 import { AmbulanceEntity } from 'src/data-services/mgdb/entities/ambulance.entity';
 import { BcryptService } from 'src/libs/crypto/bcrypt/bcrypt.service';
-import { MongoRepository } from 'typeorm';
+import { In, MongoRepository } from 'typeorm';
 
 @Injectable()
 export class AdminAmbulanceUseCaseService {
   constructor(
     @InjectRepository(AmbulanceEntity)
     private ambulanceRepository: MongoRepository<AmbulanceEntity>,
+
+    @InjectRepository(AmbulanceRequestEntity)
+    private ambulanceRequestRepository: MongoRepository<AmbulanceRequestEntity>,
 
     private bcryptService: BcryptService,
   ) {}
@@ -69,6 +73,19 @@ export class AdminAmbulanceUseCaseService {
 
     if (!ambulance)
       throw new AppNotFoundException('ambulance with this id does not exist');
+
+    const ambulanceRequests = await this.ambulanceRequestRepository.find({
+      where: { ambulance: ambulance._id },
+    });
+
+    await Promise.all(
+      ambulanceRequests.map(async (ambulanceRequest) => {
+        await this.ambulanceRequestRepository.update(
+          { _id: ambulanceRequest._id },
+          { deletedAt: new Date() },
+        );
+      }),
+    );
 
     const deletedAmbulance = { ...ambulance, deletedAt: new Date() };
 

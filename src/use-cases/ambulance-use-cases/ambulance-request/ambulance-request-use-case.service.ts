@@ -32,6 +32,10 @@ export class AmbulanceRequestUseCaseService {
       where: { ambulance: ambulanceId, deletedAt: null },
     });
 
+    const ambulance = await this.ambulanceRepository.findOneBy({
+      _id: ambulanceId,
+    });
+
     return await Promise.all(
       ambulanceRequests.map(async (ambulanceRequest) => {
         const requester = await this.userRepository.findOne({
@@ -39,7 +43,7 @@ export class AmbulanceRequestUseCaseService {
           select: ['fullname', 'email', 'contact', 'location'],
         });
 
-        return { ...ambulanceRequest, requester };
+        return { ...ambulanceRequest, ambulance: ambulance, requester };
       }),
     );
   }
@@ -70,6 +74,11 @@ export class AmbulanceRequestUseCaseService {
               ? AmbulanceRequestStatusEnum.COMPLETED
               : ambulanceRequest.status
         : ambulanceRequest.status,
+      deletedAt: dto.status
+        ? dto.status === AmbulanceRequestStatusEnum.COMPLETED
+          ? new Date()
+          : ambulanceRequest.deletedAt
+        : ambulanceRequest.deletedAt,
     };
 
     await this.ambulanceRequestRepository.update(
